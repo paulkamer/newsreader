@@ -1,0 +1,18 @@
+{{define "admin_actions"}}
+<a href="/admin/newssources/edit/{{.ID}}">
+    Edit 
+</a> | 
+<button hx-delete="/newssources/{{.ID}}" hx-swap="delete" hx-target="closest tr">
+  Delete 
+</button>
+{{end}}
+
+<table>
+    {{range .Newssources}}
+        <tr>
+            <td>{{.Title}}</td>
+            <td>{{.Url}}</td>
+            <td>{{if $.IsAdmin}}{{template "admin_actions" .}}{{end}}</td>
+        </tr>
+    {{end}}
+</table>
