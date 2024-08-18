@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 
+	"newsreader/config"
 	"newsreader/controllers"
 	"newsreader/db"
 )
@@ -29,8 +30,14 @@ func main() {
 		},
 	})
 
-	db.InitDatabase(db.SQLiteType, db.SQLiteDataSource)
-	defer db.DB.Close()
+	dbConn, _ := db.InitDatabase(db.SQLiteType, db.SQLiteDataSource)
+	defer dbConn.Close()
+
+	appconfig := &config.AppConfig{DB: dbConn}
+	app.Use(func(c *fiber.Ctx) error {
+		c.Locals("appconfig", appconfig)
+		return c.Next()
+	})
 
 	// Routes
 	app.Get("/", controllers.Indexpage)

@@ -1,17 +1,40 @@
 # Feedly clone
 
-- Backend (Go https://docs.gofiber.io/)
+WIP - a Feedly clone built with Go and HTMX.
+
+- Backend (Go https://docs.gofiber.io/ | https://github.com/air-verse/air)
 - Frontend (HTMX https://htmx.org/)
 - Database (SQLite)
 - Job queue: TBD
 
-# TODOs
+## Running
+
+Start backend with the command:
+
+```sh
+air
+```
+
+And open http://127.0.0.1:3001
+
+## Testing
+
+```sh
+cd src
+
+go test ./...
+
+# Coverage
+go test -coverprofile=coverage.out ./...
+```
+
+## TODOs
 
 - [x] Use template layout
 - [x] Adding news sources
 - [x] Editing news sources
-- [ ] CSRF
 - [ ] Tests
+- [ ] CSRF
 - [ ] Background jobs: Fetching news
 - [ ] Background jobs: job scheduler
 - [ ] Feed/newsource page

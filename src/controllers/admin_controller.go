@@ -2,14 +2,17 @@ package controllers
 
 import (
 	"log"
-	"newsreader/db"
+	"newsreader/config"
+	"newsreader/models"
+	"newsreader/repositories"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
 func AdminIndexPage(c *fiber.Ctx) error {
-	newssources, _ := db.ListNewssources()
+	appconfig := c.Locals("appconfig").(*config.AppConfig)
+	newssources, _ := repositories.ListNewssources(appconfig.DB)
 
 	return c.Render("admin/index", fiber.Map{
 		"Newssources": newssources,
@@ -24,13 +27,14 @@ func AdminAddNewssourcePage(c *fiber.Ctx) error {
 }
 
 func AdminEditNewssourcePage(c *fiber.Ctx) error {
+	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	guid, parse_err := uuid.Parse(c.Params("ID"))
 
 	if parse_err != nil {
 		return fiber.ErrBadRequest
 	}
 
-	newssource, err := db.FetchNewssource(guid)
+	newssource, err := repositories.FetchNewssource(appconfig.DB, guid)
 	if err != nil {
 		log.Printf("Failed to fetch newssource %s: %v", guid, err)
 	}
@@ -38,18 +42,19 @@ func AdminEditNewssourcePage(c *fiber.Ctx) error {
 	return c.Render("admin/newssources/edit", fiber.Map{
 		"IsAdmin":    true,
 		"Newssource": newssource,
-		"Options":    []string{string(db.URGENT), string(db.HIGH), string(db.MED), string(db.LOW)},
+		"Options":    []string{string(models.URGENT), string(models.HIGH), string(models.MED), string(models.LOW)},
 	})
 }
 
 func AdminDeleteNewssource(c *fiber.Ctx) error {
+	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	guid, parse_err := uuid.Parse(c.Params("ID"))
 
 	if parse_err != nil {
 		return fiber.ErrBadRequest
 	}
 
-	err := db.DeleteNewssource(guid)
+	err := repositories.DeleteNewssource(appconfig.DB, guid)
 	if err == nil {
 		return c.SendString(c.Params("ID"))
 	}

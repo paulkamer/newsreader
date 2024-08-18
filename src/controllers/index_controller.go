@@ -1,13 +1,16 @@
 package controllers
 
 import (
-	"newsreader/db"
+	"newsreader/config"
+	"newsreader/repositories"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func Indexpage(c *fiber.Ctx) error {
-	newssources, _ := db.ListNewssources()
+	appconfig := c.Locals("appconfig").(*config.AppConfig)
+
+	newssources, _ := repositories.ListNewssources(appconfig.DB)
 
 	return c.Render("index", fiber.Map{
 		"Newssources": newssources,
