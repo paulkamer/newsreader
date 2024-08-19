@@ -1,4 +1,7 @@
 newsreader
 newsreader.db
+
 tmp
+
 coverage.out
+coverage.html

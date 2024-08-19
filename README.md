@@ -26,6 +26,7 @@ go test ./...
 
 # Coverage
 go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out -o coverage.html
 ```
 
 ## TODOs
@@ -33,9 +34,10 @@ go test -coverprofile=coverage.out ./...
 - [x] Use template layout
 - [x] Adding news sources
 - [x] Editing news sources
-- [ ] Tests
+- [ ] Validate newssource URL (add, edit)
+- [ ] [WIP] Tests
 - [ ] CSRF
-- [ ] Background jobs: Fetching news
+- [ ] [WIP] Background jobs: Fetching news
 - [ ] Background jobs: job scheduler
 - [ ] Feed/newsource page
 - [ ] List latest (unread) articles

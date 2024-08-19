@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"newsreader/models"
@@ -11,11 +12,11 @@ import (
 
 func InsertNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 	query := `
-		INSERT INTO newssources (id, title, url, update_priority, is_active) 
-		            VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO newssources (id, title, url, feed_type, update_priority, is_active) 
+		            VALUES ($1, $2, $3, $4, $5, $6)
 		`
 
-	_, err := dbconn.Exec(query, newssource.ID, newssource.Title, newssource.Url, newssource.UpdatePriority, newssource.IsActive)
+	_, err := dbconn.Exec(query, newssource.ID, newssource.Title, newssource.Url, newssource.FeedType, newssource.UpdatePriority, newssource.IsActive)
 
 	if err != nil {
 		return fmt.Errorf("failed to insert newssource: %s", err)
@@ -30,7 +31,7 @@ func FetchNewssource(dbconn *sql.DB, guid uuid.UUID) (models.Newssource, error) 
 	rows := dbconn.QueryRow(query, guid)
 
 	var newssource models.Newssource
-	err := rows.Scan(&newssource.ID, &newssource.Title, &newssource.Url, &newssource.UpdatePriority, &newssource.IsActive, &newssource.CreatedAt, &newssource.UpdatedAt)
+	err := rows.Scan(&newssource.ID, &newssource.Title, &newssource.Url, &newssource.FeedType, &newssource.UpdatePriority, &newssource.IsActive, &newssource.CreatedAt, &newssource.UpdatedAt)
 	if err != nil {
 		return newssource, err
 	}
@@ -43,13 +44,14 @@ func UpdateNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 		UPDATE newssources SET
 			title = ?,
 			url = ?,
+			feed_type = ?,
 			update_priority = ?,
 			is_active = ?,
 			updated_at = CURRENT_TIMESTAMP
 		WHERE id = ?
 		`
 
-	result, err := dbconn.Exec(query, newssource.Title, newssource.Url, newssource.UpdatePriority, newssource.IsActive, newssource.ID)
+	result, err := dbconn.Exec(query, newssource.Title, newssource.Url, newssource.FeedType, newssource.UpdatePriority, newssource.IsActive, newssource.ID)
 
 	if err != nil {
 		return fmt.Errorf("failed to update newssource: %s", err)
@@ -57,8 +59,9 @@ func UpdateNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 
 	// Check the number of affected rows
 	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		log.Fatal("Failed to retrieve rows affected:", err)
+	if err != nil || rowsAffected == 0 {
+		fmt.Printf("Failed to update newssource: %v", err)
+		return errors.New("failed to update newssource")
 	}
 	fmt.Printf("Successfully updated %d row(s)\n", rowsAffected)
 
@@ -66,7 +69,7 @@ func UpdateNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 }
 
 func DeleteNewssource(dbconn *sql.DB, guid uuid.UUID) error {
-	query := `DELETE FROM newssources WHERE id = $1`
+	query := `DELETE FROM newssources WHERE id = ?`
 
 	_, err := dbconn.Exec(query, guid)
 	if err != nil {

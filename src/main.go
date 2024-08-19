@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,26 @@ import (
 func main() {
 	engine := html.New("./views", ".html")
 
-	app := fiber.New(fiber.Config{
+	app := initApp(engine)
+	dbconn := initDatabase(app)
+	defer dbconn.Close()
+
+	// Routes
+	app.Get("/", controllers.Indexpage)
+
+	app.Get("/admin", controllers.AdminIndexPage)
+	app.Get("/admin/newssources/add", controllers.AdminAddNewssourcePage)
+	app.Get("/admin/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
+
+	app.Post("/newssources", controllers.CreateNewssource)
+	app.Put("/newssources", controllers.EditNewssource)
+	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
+
+	log.Fatal(app.Listen(":3001"))
+}
+
+func initApp(engine *html.Engine) *fiber.App {
+	return fiber.New(fiber.Config{
 		Views:       engine,
 		ViewsLayout: "base",
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -29,9 +49,10 @@ func main() {
 			return c.Status(code).SendString("An error occurred")
 		},
 	})
+}
 
+func initDatabase(app *fiber.App) *sql.DB {
 	dbConn, _ := db.InitDatabase(db.SQLiteType, db.SQLiteDataSource)
-	defer dbConn.Close()
 
 	appconfig := &config.AppConfig{DB: dbConn}
 	app.Use(func(c *fiber.Ctx) error {
@@ -39,16 +60,5 @@ func main() {
 		return c.Next()
 	})
 
-	// Routes
-	app.Get("/", controllers.Indexpage)
-
-	app.Get("/admin", controllers.AdminIndexPage)
-	app.Get("/admin/newssources/add", controllers.AdminAddNewssourcePage)
-	app.Get("/admin/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
-
-	app.Post("/newssources", controllers.CreateNewssource)
-	app.Put("/newssources", controllers.EditNewssource)
-	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
-
-	log.Fatal(app.Listen(":3001"))
+	return dbConn
 }

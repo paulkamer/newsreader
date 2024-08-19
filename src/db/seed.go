@@ -18,7 +18,16 @@ func Seed(dbconn *sql.DB) {
 	}
 
 	newssources := []models.Newssource{
-		{uuid.New(), "CNN", "https://cnn.com", models.URGENT, true, time.Now(), time.Now()},
+		{
+			ID:             uuid.New(),
+			Title:          "NASA",
+			Url:            "https://earthobservatory.nasa.gov/feeds/earth-observatory.rss",
+			FeedType:       models.RSS,
+			UpdatePriority: models.URGENT,
+			IsActive:       true,
+			CreatedAt:      time.Now(),
+			UpdatedAt:      time.Now(),
+		},
 	}
 
 	for _, newssource := range newssources {

@@ -8,6 +8,7 @@ import (
 )
 
 type UpdatePriority string
+type FeedType string
 
 const (
 	URGENT UpdatePriority = "URGENT"
@@ -21,7 +22,21 @@ func StringToUpdatePriority(prio string) (UpdatePriority, error) {
 	case URGENT, HIGH, MED, LOW:
 		return UpdatePriority(prio), nil
 	default:
-		return "", errors.New("invalid user role")
+		return "", errors.New("invalid update priority")
+	}
+}
+
+const (
+	RSS  FeedType = "rss"
+	ATOM FeedType = "atom"
+)
+
+func StringToFeedType(feedType string) (FeedType, error) {
+	switch FeedType(feedType) {
+	case RSS, ATOM:
+		return FeedType(feedType), nil
+	default:
+		return "", errors.New("invalid feed type")
 	}
 }
 
@@ -30,6 +45,7 @@ type Newssource struct {
 	ID             uuid.UUID      `json:"id"`
 	Title          string         `json:"title"`
 	Url            string         `json:"url"`
+	FeedType       FeedType       `json:"feed_type"`
 	UpdatePriority UpdatePriority `json:"update_priority"`
 	IsActive       bool           `json:"is_active"`
 	CreatedAt      time.Time      `json:"created_at"`

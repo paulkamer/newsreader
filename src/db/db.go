@@ -11,19 +11,19 @@ import (
 
 func InitDatabase(dbType, dataSourceName string) (*sql.DB, error) {
 	var err error
-	dbConn, err := OpenDatabase(dbType, dataSourceName)
+	dbConn, err := Connect(dbType, dataSourceName)
 	if err != nil {
 		log.Fatalf("Failed to connect to %s database: %v", dbType, err)
 	}
 	fmt.Printf("Connected to %s database!\n", dbType)
 
-	CreateDbStructure(dbConn)
+	createDbStructure(dbConn)
 	Seed(dbConn)
 
 	return dbConn, nil
 }
 
-func OpenDatabase(dbType, dataSourceName string) (*sql.DB, error) {
+func Connect(dbType, dataSourceName string) (*sql.DB, error) {
 	db, err := sql.Open(dbType, dataSourceName)
 	if err != nil {
 		return nil, err
@@ -37,12 +37,13 @@ func OpenDatabase(dbType, dataSourceName string) (*sql.DB, error) {
 	return db, nil
 }
 
-func CreateDbStructure(dbConn *sql.DB) {
+func createDbStructure(dbConn *sql.DB) {
 	createNewssourceTableSQL := `CREATE TABLE IF NOT EXISTS newssources (
         id GUID PRIMARY KEY,
         title TEXT NOT NULL,
         url TEXT NOT NULL,
 		update_priority TEXT CHECK( update_priority IN ('URGENT','HIGH','MED', 'LOW') ) NOT NULL DEFAULT 'MED',
+		feed_type TEXT CHECK( feed_type IN ('rss','atom') ) NOT NULL,
 		is_active BOOLEAN NOT NULL DEFAULT TRUE,
 		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME
