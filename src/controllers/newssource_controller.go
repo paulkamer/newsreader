@@ -65,6 +65,8 @@ func AddNewssource(c *fiber.Ctx) error {
 		log.Printf("Failed to insert newssource %s: %v", newssourceForm.Title, err)
 	}
 
+	go jobs.FetchNews(newssourceForm.ID)
+
 	c.Set("HX-Redirect", "/admin")
 	return c.SendStatus(fiber.StatusNoContent) // 204 No Content
 }
