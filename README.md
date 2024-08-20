@@ -34,16 +34,17 @@ go tool cover -html=coverage.out -o coverage.html
 - [x] Use template layout
 - [x] Adding news sources
 - [x] Editing news sources
-- [ ] Validate newssource URL (add, edit)
+- [x] Validate newssource URL (add, edit)
 - [ ] [WIP] Tests
 - [x] CSRF
-- [ ] [WIP] Background jobs: Fetching news
+- [x] Background jobs: Fetching news
 - [x] Feed/newsource page
-- [ ] Feed/newsource page
-- [ ] List latest (unread) articles
+  - [x] List latest (unread) articles
+- [ ] logging based on log level
 - [ ] Article page
   - [ ] (un)marking an article as Read
+- [ ] Background jobs: job scheduler
 - [ ] Background jobs: handling jobs with different priority
   - [ ] Newly added feed should be fetched with highest priority (ASAP)
-- [ ] Login
 - [ ] Group news sources by category
+- [ ] Login

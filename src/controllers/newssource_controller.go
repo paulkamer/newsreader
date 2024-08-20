@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
+	"net/url"
 	"newsreader/config"
+	"newsreader/jobs"
 	"newsreader/models"
 	"newsreader/repositories"
 
@@ -50,7 +53,12 @@ func AddNewssource(c *fiber.Ctx) error {
 	// TODO validate values
 	newssourceForm.ID = uuid.New()
 	newssourceForm.UpdatePriority = models.MED
+	newssourceForm.FeedType = models.RSS
 	newssourceForm.IsActive = true
+
+	if !validateNewssourceUrl(newssourceForm.Url) {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
+	}
 
 	err := repositories.InsertNewssource(appconfig.DB, newssourceForm)
 	if err != nil {
@@ -62,6 +70,7 @@ func AddNewssource(c *fiber.Ctx) error {
 }
 
 func EditNewssource(c *fiber.Ctx) error {
+	// TODO fetch news source from DB
 	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	var newssourceForm models.Newssource
 
@@ -72,6 +81,11 @@ func EditNewssource(c *fiber.Ctx) error {
 	// TODO validate values
 	newssourceForm.UpdatePriority, _ = models.StringToUpdatePriority(c.FormValue("update_priority"))
 	newssourceForm.IsActive = c.FormValue("is_active") == "1"
+	newssourceForm.FeedType = models.RSS
+
+	if !validateNewssourceUrl(newssourceForm.Url) {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
+	}
 
 	err := repositories.UpdateNewssource(appconfig.DB, newssourceForm)
 	if err != nil {
@@ -80,4 +94,23 @@ func EditNewssource(c *fiber.Ctx) error {
 
 	c.Set("HX-Redirect", "/admin")
 	return c.SendStatus(fiber.StatusSeeOther) // 303 See Other
+}
+
+func validateNewssourceUrl(urlStr string) bool {
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil {
+		return false
+	}
+
+	// Check if the scheme is https
+	if parsedURL.Scheme != "https" {
+		return false
+	}
+
+	// Check if the host is not empty
+	if parsedURL.Host == "" {
+		return false
+	}
+
+	return true
 }
