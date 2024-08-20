@@ -43,8 +43,6 @@ func AddNewssource(c *fiber.Ctx) error {
 	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	var newssourceForm models.Newssource
 
-	// TODO CSRF
-
 	if err := c.BodyParser(&newssourceForm); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Error parsing form data")
 	}
@@ -66,11 +64,6 @@ func AddNewssource(c *fiber.Ctx) error {
 func EditNewssource(c *fiber.Ctx) error {
 	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	var newssourceForm models.Newssource
-
-	log.Printf("title %s", c.FormValue("title"))
-	log.Printf("update_priority %s", c.FormValue("update_priority"))
-
-	// TODO CSRF
 
 	if err := c.BodyParser(&newssourceForm); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Error parsing form data")

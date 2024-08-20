@@ -36,7 +36,7 @@ go tool cover -html=coverage.out -o coverage.html
 - [x] Editing news sources
 - [ ] Validate newssource URL (add, edit)
 - [ ] [WIP] Tests
-- [ ] CSRF
+- [x] CSRF
 - [ ] [WIP] Background jobs: Fetching news
 - [x] Feed/newsource page
 - [ ] Feed/newsource page

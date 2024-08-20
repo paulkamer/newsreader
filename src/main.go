@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/csrf"
+	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/template/html/v2"
 
 	"newsreader/config"
@@ -18,6 +20,15 @@ func main() {
 	app := initApp(engine)
 	dbconn := initDatabase(app)
 	defer dbconn.Close()
+
+	// CSRF Middleware
+	app.Use(csrf.New(csrf.Config{
+		KeyLookup:      "header:X-Csrf-Token",
+		CookieSameSite: "Strict",
+		Expiration:     8600,
+		KeyGenerator:   utils.UUIDv4,
+		ContextKey:     "csrf",
+	}))
 
 	// Routes
 	app.Get("/", controllers.Indexpage)
@@ -37,8 +48,9 @@ func main() {
 
 func initApp(engine *html.Engine) *fiber.App {
 	return fiber.New(fiber.Config{
-		Views:       engine,
-		ViewsLayout: "base",
+		Views:             engine,
+		ViewsLayout:       "base",
+		PassLocalsToViews: true,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
 
