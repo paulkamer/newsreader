@@ -1,0 +1,7 @@
+Articles
+{{ range .Articles }}
+    <div class="article">
+        <h2>{{ .Title }}</h2>
+        <p>{{ .CreatedAt }}</p>
+    </div>
+{{ end }}

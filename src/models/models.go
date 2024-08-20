@@ -53,7 +53,7 @@ type Newssource struct {
 }
 
 type Article struct {
-	ID        uuid.UUID `json:"id"`
+	ID        string    `json:"id"`
 	Source    uuid.UUID `json:"source_id"`
 	Title     string    `json:"title"`
 	Url       string    `json:"url"`

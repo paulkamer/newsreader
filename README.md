@@ -38,7 +38,7 @@ go tool cover -html=coverage.out -o coverage.html
 - [ ] [WIP] Tests
 - [ ] CSRF
 - [ ] [WIP] Background jobs: Fetching news
-- [ ] Background jobs: job scheduler
+- [x] Feed/newsource page
 - [ ] Feed/newsource page
 - [ ] List latest (unread) articles
 - [ ] Article page

@@ -10,7 +10,36 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateNewssource(c *fiber.Ctx) error {
+func NewssourcePage(c *fiber.Ctx) error {
+	appconfig := c.Locals("appconfig").(*config.AppConfig)
+	guid, parse_err := uuid.Parse(c.Params("ID"))
+	if parse_err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	newssource, err := repositories.FetchNewssource(appconfig.DB, guid)
+
+	if err != nil {
+		fmt.Printf("Failed to fetch newssource: %v", err)
+		return fiber.ErrBadRequest
+	}
+
+	articles, err := repositories.ListArticles(appconfig.DB, guid)
+
+	if err != nil {
+		fmt.Printf("Failed to fetch articles: %v", err)
+		return fiber.ErrInternalServerError
+	}
+
+	fmt.Printf("articles: %v", articles)
+
+	return c.Render("feed", fiber.Map{
+		"Newssource": newssource,
+		"Articles":   articles,
+	})
+}
+
+func AddNewssource(c *fiber.Ctx) error {
 	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	var newssourceForm models.Newssource
 

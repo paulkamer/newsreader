@@ -10,7 +10,7 @@
 <table>
     {{range .Newssources}}
         <tr>
-            <td>{{.Title}}</td>
+            <td><a href="/newssources/{{ .ID }}">{{.Title}}</a></td>
             <td>{{.Url}}</td>
             <td>{{if $.IsAdmin}}{{template "admin_actions" .}}{{end}}</td>
         </tr>

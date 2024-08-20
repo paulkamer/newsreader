@@ -22,11 +22,13 @@ func main() {
 	// Routes
 	app.Get("/", controllers.Indexpage)
 
+	app.Get("/newssources/:ID", controllers.NewssourcePage)
+
 	app.Get("/admin", controllers.AdminIndexPage)
 	app.Get("/admin/newssources/add", controllers.AdminAddNewssourcePage)
 	app.Get("/admin/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
 
-	app.Post("/newssources", controllers.CreateNewssource)
+	app.Post("/newssources", controllers.AddNewssource)
 	app.Put("/newssources", controllers.EditNewssource)
 	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
 
