@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/url"
 	"newsreader/config"
@@ -23,18 +22,18 @@ func NewssourcePage(c *fiber.Ctx) error {
 	newssource, err := repositories.FetchNewssource(appconfig.DB, guid)
 
 	if err != nil {
-		fmt.Printf("Failed to fetch newssource: %v", err)
+		log.Printf("Failed to fetch newssource: %v", err)
 		return fiber.ErrBadRequest
 	}
 
 	articles, err := repositories.ListArticles(appconfig.DB, guid)
 
 	if err != nil {
-		fmt.Printf("Failed to fetch articles: %v", err)
+		log.Printf("Failed to fetch articles: %v", err)
 		return fiber.ErrInternalServerError
 	}
 
-	fmt.Printf("articles: %v", articles)
+	log.Printf("articles: %v", articles)
 
 	return c.Render("feed", fiber.Map{
 		"Newssource": newssource,
@@ -91,7 +90,7 @@ func EditNewssource(c *fiber.Ctx) error {
 
 	err := repositories.UpdateNewssource(appconfig.DB, newssourceForm)
 	if err != nil {
-		log.Printf("Failed to update newssource %s: %v", newssourceForm.Title, err)
+		log.Printf("failed to update newssource %s: %v", newssourceForm.Title, err)
 	}
 
 	c.Set("HX-Redirect", "/admin")

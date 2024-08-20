@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -15,7 +14,7 @@ func InitDatabase(dbType, dataSourceName string) (*sql.DB, error) {
 	if err != nil {
 		log.Fatalf("Failed to connect to %s database: %v", dbType, err)
 	}
-	fmt.Printf("Connected to %s database!\n", dbType)
+	log.Printf("Connected to %s database!\n", dbType)
 
 	createDbStructure(dbConn)
 	Seed(dbConn)
@@ -69,5 +68,5 @@ func createDbStructure(dbConn *sql.DB) {
 		log.Fatalf("Failed to create table: %v", err)
 	}
 
-	fmt.Printf("Created DB structure")
+	log.Printf("Created DB structure")
 }

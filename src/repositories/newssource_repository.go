@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"newsreader/models"
@@ -60,10 +59,9 @@ func UpdateNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 	// Check the number of affected rows
 	rowsAffected, err := result.RowsAffected()
 	if err != nil || rowsAffected == 0 {
-		fmt.Printf("Failed to update newssource: %v", err)
-		return errors.New("failed to update newssource")
+		return fmt.Errorf("failed to update newssource: %v", err)
 	}
-	fmt.Printf("Successfully updated %d row(s)\n", rowsAffected)
+	log.Printf("Successfully updated %d row(s)\n", rowsAffected)
 
 	return err
 }
@@ -73,7 +71,7 @@ func DeleteNewssource(dbconn *sql.DB, guid uuid.UUID) error {
 
 	_, err := dbconn.Exec(query, guid)
 	if err != nil {
-		log.Printf("failed to delete newssource: %s", err)
+		return fmt.Errorf("failed to delete newssource: %s", err)
 	}
 
 	return err

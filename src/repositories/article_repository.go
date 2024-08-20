@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"newsreader/models"
 
 	"github.com/google/uuid"
@@ -41,10 +42,10 @@ func UpdateArticle(dbconn *sql.DB, article models.Article) error {
 	// Check the number of affected rows
 	rowsAffected, err := result.RowsAffected()
 	if err != nil || rowsAffected == 0 {
-		fmt.Printf("Failed to update article: %v", err)
+		log.Printf("Failed to update article: %v", err)
 		return errors.New("failed to update article")
 	}
-	fmt.Printf("Successfully updated %d row(s)\n", rowsAffected)
+	log.Printf("Successfully updated %d row(s)\n", rowsAffected)
 
 	return err
 }
