@@ -52,8 +52,8 @@ func TestFetchNewssource(t *testing.T) {
 	uuid := uuid.New()
 	created_at := time.Now()
 
-	rows := sqlmock.NewRows([]string{"id", "title", "url", "feed_type", "update_priority", "is_active", "created_at", "updated_at"}).AddRow(uuid, "title", "url", "rss", "URGENT", true, created_at, created_at)
-	mock.ExpectQuery("SELECT \\* FROM newssources WHERE id = ?").WithArgs(uuid).WillReturnRows(rows)
+	rows := sqlmock.NewRows([]string{"id", "title", "url", "feed_type", "update_priority", "is_active", "created_at"}).AddRow(uuid, "title", "url", "rss", "URGENT", true, created_at)
+	mock.ExpectQuery("SELECT id, title, url, feed_type, update_priority, is_active, created_at FROM newssources WHERE id = ?").WithArgs(uuid).WillReturnRows(rows)
 
 	newssource, err := FetchNewssource(db, uuid)
 

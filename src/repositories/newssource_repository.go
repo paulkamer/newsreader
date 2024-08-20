@@ -26,12 +26,12 @@ func InsertNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 }
 
 func FetchNewssource(dbconn *sql.DB, guid uuid.UUID) (models.Newssource, error) {
-	query := `SELECT * FROM newssources WHERE id = ?`
+	query := `SELECT id, title, url, feed_type, update_priority, is_active, created_at FROM newssources WHERE id = ?`
 
 	rows := dbconn.QueryRow(query, guid)
 
 	var newssource models.Newssource
-	err := rows.Scan(&newssource.ID, &newssource.Title, &newssource.Url, &newssource.FeedType, &newssource.UpdatePriority, &newssource.IsActive, &newssource.CreatedAt, &newssource.UpdatedAt)
+	err := rows.Scan(&newssource.ID, &newssource.Title, &newssource.Url, &newssource.FeedType, &newssource.UpdatePriority, &newssource.IsActive, &newssource.CreatedAt)
 	if err != nil {
 		return newssource, err
 	}
