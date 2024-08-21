@@ -2,7 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"log"
+	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
@@ -12,9 +13,15 @@ import (
 	"newsreader/config"
 	"newsreader/controllers"
 	"newsreader/db"
+
+	"github.com/sirupsen/logrus"
 )
 
+var log = logrus.New()
+
 func main() {
+	setLogLevel()
+
 	engine := html.New("./views", ".html")
 
 	app := initApp(engine)
@@ -46,8 +53,13 @@ func main() {
 	log.Fatal(app.Listen(":3001"))
 }
 
+func setLogLevel() {
+	level, _ := logrus.ParseLevel(os.Getenv("LOG_LEVEL"))
+	logrus.SetLevel(level)
+}
+
 func initApp(engine *html.Engine) *fiber.App {
-	return fiber.New(fiber.Config{
+	app := fiber.New(fiber.Config{
 		Views:             engine,
 		ViewsLayout:       "base",
 		PassLocalsToViews: true,
@@ -58,11 +70,15 @@ func initApp(engine *html.Engine) *fiber.App {
 				code = e.Code
 			}
 
-			log.Printf("An error occurred: %v\n", err)
+			log.Error("An error occurred", "error", err)
 
 			return c.Status(code).SendString("An error occurred")
 		},
 	})
+
+	app.Use(requestLogger())
+
+	return app
 }
 
 func initDatabase(app *fiber.App) *sql.DB {
@@ -75,4 +91,21 @@ func initDatabase(app *fiber.App) *sql.DB {
 	})
 
 	return dbConn
+}
+
+func requestLogger() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		start := time.Now()
+
+		err := c.Next() // Proceed with the next middleware or handler
+
+		log.WithFields(logrus.Fields{
+			"method":     c.Method(),
+			"path":       c.Path(),
+			"status":     c.Response().StatusCode(),
+			"latency_ns": time.Since(start).Nanoseconds(),
+		}).Info("request")
+
+		return err
+	}
 }

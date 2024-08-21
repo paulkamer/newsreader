@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/url"
 	"newsreader/config"
 	"newsreader/jobs"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 func NewssourcePage(c *fiber.Ctx) error {
@@ -22,18 +22,18 @@ func NewssourcePage(c *fiber.Ctx) error {
 	newssource, err := repositories.FetchNewssource(appconfig.DB, guid)
 
 	if err != nil {
-		log.Printf("Failed to fetch newssource: %v", err)
+		log.Errorf("Failed to fetch newssource: %v", err)
 		return fiber.ErrBadRequest
 	}
 
 	articles, err := repositories.ListArticles(appconfig.DB, guid)
 
 	if err != nil {
-		log.Printf("Failed to fetch articles: %v", err)
+		log.Errorf("Failed to fetch articles: %v", err)
 		return fiber.ErrInternalServerError
 	}
 
-	log.Printf("articles: %v", articles)
+	log.Debugf("articles: %v", articles)
 
 	return c.Render("feed", fiber.Map{
 		"Newssource": newssource,
@@ -61,7 +61,7 @@ func AddNewssource(c *fiber.Ctx) error {
 
 	err := repositories.InsertNewssource(appconfig.DB, newssourceForm)
 	if err != nil {
-		log.Printf("Failed to insert newssource %s: %v", newssourceForm.Title, err)
+		log.Errorf("Failed to insert newssource %s: %v", newssourceForm.Title, err)
 	}
 
 	go jobs.FetchNews(newssourceForm.ID)
@@ -90,7 +90,7 @@ func EditNewssource(c *fiber.Ctx) error {
 
 	err := repositories.UpdateNewssource(appconfig.DB, newssourceForm)
 	if err != nil {
-		log.Printf("failed to update newssource %s: %v", newssourceForm.Title, err)
+		log.Errorf("failed to update newssource %s: %v", newssourceForm.Title, err)
 	}
 
 	c.Set("HX-Redirect", "/admin")

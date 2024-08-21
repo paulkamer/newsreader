@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"log"
 	"newsreader/config"
 	"newsreader/models"
 	"newsreader/repositories"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -36,7 +37,7 @@ func AdminEditNewssourcePage(c *fiber.Ctx) error {
 
 	newssource, err := repositories.FetchNewssource(appconfig.DB, guid)
 	if err != nil {
-		log.Printf("Failed to fetch newssource %s: %v", guid, err)
+		log.Errorf("Failed to fetch newssource %s: %v", guid, err)
 	}
 
 	return c.Render("admin/newssources/edit", fiber.Map{

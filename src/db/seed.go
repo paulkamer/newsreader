@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"newsreader/models"
 	"newsreader/repositories"
 	"time"
@@ -33,7 +33,8 @@ func Seed(dbconn *sql.DB) {
 	for _, newssource := range newssources {
 		err := repositories.InsertNewssource(dbconn, newssource)
 		if err != nil {
-			log.Printf("Failed to insert newssource %s: %v", newssource.Title, err)
+			_ = fmt.Errorf("failed to insert newssource %s: %v", newssource.Title, err)
+			return
 		}
 	}
 }

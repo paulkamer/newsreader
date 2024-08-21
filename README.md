@@ -40,7 +40,7 @@ go tool cover -html=coverage.out -o coverage.html
 - [x] Background jobs: Fetching news
 - [x] Feed/newsource page
   - [x] List latest (unread) articles
-- [ ] logging based on log level
+- [x] logging based on log level
 - [ ] Article page
   - [ ] (un)marking an article as Read
 - [ ] Background jobs: job scheduler

@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
@@ -14,7 +14,6 @@ func InitDatabase(dbType, dataSourceName string) (*sql.DB, error) {
 	if err != nil {
 		log.Fatalf("Failed to connect to %s database: %v", dbType, err)
 	}
-	log.Printf("Connected to %s database!\n", dbType)
 
 	createDbStructure(dbConn)
 	Seed(dbConn)
@@ -68,5 +67,5 @@ func createDbStructure(dbConn *sql.DB) {
 		log.Fatalf("Failed to create table: %v", err)
 	}
 
-	log.Printf("Created DB structure")
+	log.Debugf("Created DB structure")
 }

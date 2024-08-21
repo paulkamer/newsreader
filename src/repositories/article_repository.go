@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"newsreader/models"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/google/uuid"
 )
@@ -42,10 +43,10 @@ func UpdateArticle(dbconn *sql.DB, article models.Article) error {
 	// Check the number of affected rows
 	rowsAffected, err := result.RowsAffected()
 	if err != nil || rowsAffected == 0 {
-		log.Printf("Failed to update article: %v", err)
+		log.Errorf("Failed to update article: %v", err)
 		return errors.New("failed to update article")
 	}
-	log.Printf("Successfully updated %d row(s)\n", rowsAffected)
+	log.Debugf("Successfully updated %d row(s)\n", rowsAffected)
 
 	return err
 }

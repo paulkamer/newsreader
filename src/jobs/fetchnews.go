@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"newsreader/db"
 	"newsreader/feedparsers"
@@ -12,11 +11,13 @@ import (
 	"newsreader/repositories"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/google/uuid"
 )
 
 func FetchNews(newssource_guid uuid.UUID) ([]models.Article, error) {
-	log.Printf("Fetching news for source: %s\n", newssource_guid)
+	log.Debugf("Fetching news for source: %s\n", newssource_guid)
 
 	dbconn, _ := db.Connect(db.SQLiteType, db.SQLiteDataSource)
 	defer dbconn.Close()
@@ -28,13 +29,13 @@ func FetchNews(newssource_guid uuid.UUID) ([]models.Article, error) {
 
 	body, err := FetchFeed(newssource.Url)
 	if err != nil {
-		log.Printf("Failed to fetch feed: %v\n", err)
+		log.Errorf("Failed to fetch feed: %v\n", err)
 		return nil, err
 	}
 
 	articles, err := ParseFeed(body, newssource)
 	if err != nil {
-		log.Printf("Failed to parse feed: %v\n", err)
+		log.Errorf("Failed to parse feed: %v\n", err)
 		return nil, err
 	}
 
@@ -46,14 +47,14 @@ func FetchNews(newssource_guid uuid.UUID) ([]models.Article, error) {
 func FetchFeed(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Printf("Error making HTTP request: %v\n", err)
+		log.Errorf("Error making HTTP request: %v\n", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("Error reading response body: %v\n", err)
+		log.Errorf("Error reading response body: %v\n", err)
 		return nil, err
 	}
 
@@ -71,7 +72,7 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 		rss, err := feedparsers.ParseRssFeed(body)
 
 		if err != nil {
-			log.Printf("Error parsing RSS feed: %v\n", err)
+			log.Errorf("Error parsing RSS feed: %v\n", err)
 			return nil, err
 		}
 
@@ -90,9 +91,9 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 	case models.ATOM:
 		log.Print("Parsing Atom feed\n")
 		atom, _ := feedparsers.ParseAtomFeed(body)
-		log.Printf("Atom: %v\n", atom)
+		log.Debugf("Atom: %v\n", atom)
 	default:
-		log.Printf("Unknown feed type %s", newssource.FeedType)
+		log.Debugf("Unknown feed type %s", newssource.FeedType)
 		return nil, errors.New("unknown feed type")
 	}
 
@@ -105,7 +106,7 @@ func storeArticles(dbconn *sql.DB, articles []models.Article) error {
 		err := repositories.InsertArticle(dbconn, article)
 
 		if err != nil {
-			log.Printf("Failed to insert article: %v\n", err)
+			log.Errorf("Failed to insert article: %v\n", err)
 		}
 	}
 

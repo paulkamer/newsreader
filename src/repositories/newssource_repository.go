@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"newsreader/models"
 
 	"github.com/google/uuid"
@@ -53,15 +52,13 @@ func UpdateNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 	result, err := dbconn.Exec(query, newssource.Title, newssource.Url, newssource.FeedType, newssource.UpdatePriority, newssource.IsActive, newssource.ID)
 
 	if err != nil {
-		return fmt.Errorf("failed to update newssource: %s", err)
+		return err
 	}
 
-	// Check the number of affected rows
 	rowsAffected, err := result.RowsAffected()
 	if err != nil || rowsAffected == 0 {
-		return fmt.Errorf("failed to update newssource: %v", err)
+		return fmt.Errorf("failed to update newssource: %s", err)
 	}
-	log.Printf("Successfully updated %d row(s)\n", rowsAffected)
 
 	return err
 }
