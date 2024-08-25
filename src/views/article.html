@@ -1,0 +1,9 @@
+<a href="/newssources/{{ .Newssource.ID }}">Back to {{ .Newssource.Title }}</a>
+
+
+
+<h1>{{ .Article.Title }}</h1>
+Published at: {{ .Article.CreatedAt }}<br/>
+
+Url: <a href="{{ .Article.Url }}" target="_blank">{{ .Article.Url }}</a><br/>
+{{ .Article.Body }}

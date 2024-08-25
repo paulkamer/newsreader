@@ -77,14 +77,14 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 		}
 
 		for _, item := range rss.Channel.Items {
-			CreatedAt, _ := time.Parse(time.RFC1123Z, item.PubDate)
+			createdAt, _ := time.Parse(time.RFC1123, item.PubDate)
 
 			article := models.Article{
-				ID:        item.Guid,
+				ID:        uuid.New(),
 				Source:    newssource.ID,
 				Title:     item.Title,
 				Url:       item.Link,
-				CreatedAt: CreatedAt,
+				CreatedAt: createdAt,
 			}
 			articles = append(articles, article)
 		}
@@ -109,6 +109,13 @@ func storeArticles(dbconn *sql.DB, articles []models.Article) error {
 			log.Errorf("Failed to insert article: %v\n", err)
 		}
 	}
+
+	newssource, err := repositories.FetchNewssource(dbconn, articles[0].Source)
+	if err != nil {
+		log.Errorf("Failed to fetch newssource: %v\n", err)
+		return err
+	}
+	repositories.UpdateNewssource(dbconn, newssource)
 
 	return nil
 }

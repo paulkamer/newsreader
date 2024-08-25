@@ -50,6 +50,8 @@ func main() {
 	app.Put("/newssources", controllers.EditNewssource)
 	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
 
+	app.Get("/article/:ID", controllers.ArticlePage)
+
 	log.Fatal(app.Listen(":3001"))
 }
 

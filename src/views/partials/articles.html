@@ -1,7 +1,7 @@
 Articles
 {{ range .Articles }}
-    <div class="article">
-        <h2>{{ .Title }}</h2>
+    <div class="article" >
+        <a href="/article/{{ .ID }}"><h2>{{ .Title }}</h2></a>
         <p>{{ .CreatedAt }}</p>
     </div>
 {{ end }}

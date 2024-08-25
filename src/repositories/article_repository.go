@@ -26,6 +26,20 @@ func InsertArticle(dbconn *sql.DB, article models.Article) error {
 	return err
 }
 
+func FetchArticle(dbconn *sql.DB, id uuid.UUID) (models.Article, error) {
+	query := `SELECT id, source_id, title, url, body, created_at FROM articles WHERE id = ?`
+
+	rows := dbconn.QueryRow(query, id)
+
+	var article models.Article
+	err := rows.Scan(&article.ID, &article.Source, &article.Title, &article.Url, &article.Body, &article.CreatedAt)
+	if err != nil {
+		return article, err
+	}
+
+	return article, nil
+}
+
 func UpdateArticle(dbconn *sql.DB, article models.Article) error {
 	query := `
 		UPDATE articles SET
@@ -52,7 +66,7 @@ func UpdateArticle(dbconn *sql.DB, article models.Article) error {
 }
 
 func ListArticles(dbconn *sql.DB, source_guid uuid.UUID) ([]models.Article, error) {
-	query := `SELECT id, source_id, title, url, body FROM articles WHERE source_id = ?`
+	query := `SELECT id, source_id, title, url, body, created_at FROM articles WHERE source_id = ?`
 
 	rows, err := dbconn.Query(query, source_guid)
 	if err != nil {
@@ -63,7 +77,7 @@ func ListArticles(dbconn *sql.DB, source_guid uuid.UUID) ([]models.Article, erro
 	var articles []models.Article
 	for rows.Next() {
 		var article models.Article
-		err := rows.Scan(&article.ID, &article.Source, &article.Title, &article.Url, &article.Body)
+		err := rows.Scan(&article.ID, &article.Source, &article.Title, &article.Url, &article.Body, &article.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
