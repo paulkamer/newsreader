@@ -7,24 +7,26 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
-	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/template/html/v2"
+	"github.com/google/uuid"
 
 	"newsreader/config"
 	"newsreader/controllers"
 	"newsreader/db"
+	"newsreader/jobs"
 
 	"github.com/sirupsen/logrus"
 )
 
 var log = logrus.New()
 
+const newsUpdateInterval = 1 * time.Minute
+
 func main() {
 	setLogLevel()
 
-	engine := html.New("./views", ".html")
+	app := initApp(html.New("./views", ".html"))
 
-	app := initApp(engine)
 	dbconn := initDatabase(app)
 	defer dbconn.Close()
 
@@ -51,6 +53,8 @@ func main() {
 	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
 
 	app.Get("/article/:ID", controllers.ArticlePage)
+
+	startNewsUpdateScheduler()
 
 	log.Fatal(app.Listen(":3001"))
 }
@@ -110,4 +114,25 @@ func requestLogger() fiber.Handler {
 
 		return err
 	}
+}
+
+func startNewsUpdateScheduler() {
+	listChan := make(chan uuid.UUID)
+
+	go func() {
+		go jobs.DetermineOutdatedNewssources(listChan) // Trigger immediately
+
+		ticker := time.NewTicker(newsUpdateInterval)
+		defer ticker.Stop()
+
+		for range ticker.C {
+			go jobs.DetermineOutdatedNewssources(listChan)
+		}
+	}()
+
+	go func() {
+		for id := range listChan {
+			go jobs.FetchNews(id)
+		}
+	}()
 }
