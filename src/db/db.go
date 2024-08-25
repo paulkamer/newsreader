@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+
 	log "github.com/sirupsen/logrus"
 
 	_ "github.com/lib/pq"
@@ -15,7 +16,11 @@ func InitDatabase(dbType, dataSourceName string) (*sql.DB, error) {
 		log.Fatalf("Failed to connect to %s database: %v", dbType, err)
 	}
 
-	createDbStructure(dbConn)
+	err = createDbStructure(dbConn)
+	if err != nil {
+		log.Fatalf("Failed to create database structure: %v", err)
+	}
+
 	Seed(dbConn)
 
 	return dbConn, nil
@@ -27,7 +32,6 @@ func Connect(dbType, dataSourceName string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	// Verify the connection
 	if err := db.Ping(); err != nil {
 		return nil, err
 	}
@@ -35,7 +39,7 @@ func Connect(dbType, dataSourceName string) (*sql.DB, error) {
 	return db, nil
 }
 
-func createDbStructure(dbConn *sql.DB) {
+func createDbStructure(dbConn *sql.DB) error {
 	createNewssourceTableSQL := `CREATE TABLE IF NOT EXISTS newssources (
         id GUID PRIMARY KEY,
         title TEXT NOT NULL,
@@ -49,7 +53,7 @@ func createDbStructure(dbConn *sql.DB) {
 
 	_, err := dbConn.Exec(createNewssourceTableSQL)
 	if err != nil {
-		log.Fatalf("Failed to create table: %v", err)
+		return err
 	}
 
 	createArticleTableQuery := `CREATE TABLE IF NOT EXISTS articles (
@@ -62,10 +66,7 @@ func createDbStructure(dbConn *sql.DB) {
 		updated_at DATETIME
 	);`
 
-	res, err := dbConn.Exec(createArticleTableQuery)
-	if err != nil || res == nil {
-		log.Fatalf("Failed to create table: %v", err)
-	}
+	_, err = dbConn.Exec(createArticleTableQuery)
 
-	log.Debugf("Created DB structure")
+	return err
 }

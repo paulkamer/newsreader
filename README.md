@@ -22,11 +22,10 @@ And open http://127.0.0.1:3001
 ```sh
 cd src
 
-go test ./...
+go test ./... -tags 'excludetest'
 
 # Coverage
-go test -coverprofile=coverage.out ./...
-go tool cover -html=coverage.out -o coverage.html
+go test -tags 'excludetest' -coverprofile=coverage.out ./... && go tool cover -html=coverage.out -o coverage.html
 ```
 
 ## TODOs

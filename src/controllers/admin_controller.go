@@ -1,3 +1,5 @@
+//go:build !excludetest
+
 package controllers
 
 import (
