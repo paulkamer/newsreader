@@ -30,15 +30,6 @@ func main() {
 	dbconn := initDatabase(app)
 	defer dbconn.Close()
 
-	// CSRF Middleware
-	app.Use(csrf.New(csrf.Config{
-		KeyLookup:      "header:X-Csrf-Token",
-		CookieSameSite: "Strict",
-		Expiration:     8600,
-		KeyGenerator:   utils.UUIDv4,
-		ContextKey:     "csrf",
-	}))
-
 	// Routes
 	app.Get("/", controllers.Indexpage)
 
@@ -83,6 +74,10 @@ func initApp(engine *html.Engine) *fiber.App {
 	})
 
 	app.Use(requestLogger())
+
+	app.Use(csrf.New(csrf.Config{
+		ContextKey: "csrf",
+	}))
 
 	return app
 }
