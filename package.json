@@ -1,0 +1,13 @@
+{
+  "name": "newsreader",
+  "version": "0.0.1",
+  "description": "WIP - a Feedly clone built with Go and HTMX.",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.46.1",
+    "@types/node": "^22.5.1"
+  }
+}
