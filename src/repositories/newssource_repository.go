@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func InsertNewssource(dbconn *sql.DB, newssource models.Newssource) error {
+func InsertNewssource(dbconn *sql.DB, newssource *models.Newssource) error {
 	query := `
 		INSERT INTO newssources (id, title, url, feed_type, update_priority, is_active) 
 		            VALUES ($1, $2, $3, $4, $5, $6)
@@ -26,10 +26,10 @@ func InsertNewssource(dbconn *sql.DB, newssource models.Newssource) error {
 func FetchNewssource(dbconn *sql.DB, guid uuid.UUID) (models.Newssource, error) {
 	query := `SELECT id, title, url, feed_type, update_priority, is_active, created_at FROM newssources WHERE id = ?`
 
-	rows := dbconn.QueryRow(query, guid)
+	row := dbconn.QueryRow(query, guid)
 
 	var newssource models.Newssource
-	err := rows.Scan(&newssource.ID, &newssource.Title, &newssource.Url, &newssource.FeedType, &newssource.UpdatePriority, &newssource.IsActive, &newssource.CreatedAt)
+	err := row.Scan(&newssource.ID, &newssource.Title, &newssource.Url, &newssource.FeedType, &newssource.UpdatePriority, &newssource.IsActive, &newssource.CreatedAt)
 	if err != nil {
 		return newssource, err
 	}
@@ -37,7 +37,7 @@ func FetchNewssource(dbconn *sql.DB, guid uuid.UUID) (models.Newssource, error) 
 	return newssource, nil
 }
 
-func UpdateNewssource(dbconn *sql.DB, newssource models.Newssource) error {
+func UpdateNewssource(dbconn *sql.DB, newssource *models.Newssource) error {
 	query := `
 		UPDATE newssources SET
 			title = ?,
@@ -77,10 +77,10 @@ func DeleteNewssource(dbconn *sql.DB, guid uuid.UUID) error {
 func HasNewssources(dbconn *sql.DB) (bool, error) {
 	query := `SELECT id FROM newssources LIMIT 1`
 
-	rows := dbconn.QueryRow(query)
+	row := dbconn.QueryRow(query)
 
 	var newssource models.Newssource
-	err := rows.Scan(&newssource.ID)
+	err := row.Scan(&newssource.ID)
 	if err != nil {
 		return false, err
 	}

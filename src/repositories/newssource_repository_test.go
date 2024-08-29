@@ -17,7 +17,7 @@ func TestInsertNewsources(t *testing.T) {
 	}
 	defer db.Close()
 
-	newssource := models.Newssource{
+	newssource := &models.Newssource{
 		ID:             uuid.New(),
 		Title:          "title",
 		Url:            "url",
@@ -77,7 +77,7 @@ func TestUpdateNewssource(t *testing.T) {
 	}
 	defer db.Close()
 
-	newssource := models.Newssource{
+	newssource := &models.Newssource{
 		ID:             uuid.New(),
 		Title:          "title",
 		Url:            "url",

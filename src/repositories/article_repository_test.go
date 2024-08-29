@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"newsreader/models"
 	"testing"
 	"time"
@@ -17,7 +18,7 @@ func TestInsertArticle(t *testing.T) {
 	}
 	defer db.Close()
 
-	article := models.Article{
+	article := &models.Article{
 		ID:        uuid.New(),
 		Source:    uuid.New(),
 		Title:     "title",
@@ -71,6 +72,14 @@ func TestFetchArticle(t *testing.T) {
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
+
+	rows = sqlmock.NewRows([]string{"id", "source_id", "title", "url", "body", "created_at"}).
+		RowError(1, fmt.Errorf("row error"))
+
+	mock.ExpectQuery("SELECT id, source_id, title, url, body, created_at FROM articles WHERE id = \\?").WillReturnRows(rows)
+
+	_, err = FetchArticle(db, article.ID)
+	assert.Error(t, err)
 }
 
 func TestUpdateArticle(t *testing.T) {
@@ -82,7 +91,7 @@ func TestUpdateArticle(t *testing.T) {
 
 	id := uuid.New()
 
-	article := models.Article{
+	article := &models.Article{
 		ID:        id,
 		Source:    uuid.New(),
 		Title:     "title",

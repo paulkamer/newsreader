@@ -17,7 +17,7 @@ func Seed(dbconn *sql.DB) {
 		return
 	}
 
-	newssources := []models.Newssource{
+	newssources := &[]models.Newssource{
 		{
 			ID:             uuid.New(),
 			Title:          "NASA",
@@ -30,8 +30,8 @@ func Seed(dbconn *sql.DB) {
 		},
 	}
 
-	for _, newssource := range newssources {
-		err := repositories.InsertNewssource(dbconn, newssource)
+	for _, newssource := range *newssources {
+		err := repositories.InsertNewssource(dbconn, &newssource)
 		if err != nil {
 			_ = fmt.Errorf("failed to insert newssource %s: %v", newssource.Title, err)
 			return

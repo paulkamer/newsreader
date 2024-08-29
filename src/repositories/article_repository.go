@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func InsertArticle(dbconn *sql.DB, article models.Article) error {
+func InsertArticle(dbconn *sql.DB, article *models.Article) error {
 	query := `
 		INSERT INTO articles (id, source_id, title, url, body) 
 		            VALUES ($1, $2, $3, $4, $5)
@@ -29,10 +29,10 @@ func InsertArticle(dbconn *sql.DB, article models.Article) error {
 func FetchArticle(dbconn *sql.DB, id uuid.UUID) (models.Article, error) {
 	query := `SELECT id, source_id, title, url, body, created_at FROM articles WHERE id = ?`
 
-	rows := dbconn.QueryRow(query, id)
+	row := dbconn.QueryRow(query, id)
 
 	var article models.Article
-	err := rows.Scan(&article.ID, &article.Source, &article.Title, &article.Url, &article.Body, &article.CreatedAt)
+	err := row.Scan(&article.ID, &article.Source, &article.Title, &article.Url, &article.Body, &article.CreatedAt)
 	if err != nil {
 		return article, err
 	}
@@ -40,7 +40,7 @@ func FetchArticle(dbconn *sql.DB, id uuid.UUID) (models.Article, error) {
 	return article, nil
 }
 
-func UpdateArticle(dbconn *sql.DB, article models.Article) error {
+func UpdateArticle(dbconn *sql.DB, article *models.Article) error {
 	query := `
 		UPDATE articles SET
 			title = ?,

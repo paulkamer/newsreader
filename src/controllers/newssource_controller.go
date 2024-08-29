@@ -35,11 +35,11 @@ func NewssourcePage(c *fiber.Ctx) error {
 		return fiber.ErrInternalServerError
 	}
 
-	log.Debugf("articles: %v", articles)
+	// log.Debugf("articles: %v", articles)
 
 	return c.Render("feed", fiber.Map{
-		"Newssource": newssource,
-		"Articles":   articles,
+		"Newssource": &newssource,
+		"Articles":   &articles,
 	})
 }
 
@@ -61,7 +61,7 @@ func AddNewssource(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
 	}
 
-	err := repositories.InsertNewssource(appconfig.DB, newssourceForm)
+	err := repositories.InsertNewssource(appconfig.DB, &newssourceForm)
 	if err != nil {
 		log.Errorf("Failed to insert newssource %s: %v", newssourceForm.Title, err)
 	}
@@ -90,7 +90,7 @@ func EditNewssource(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
 	}
 
-	err := repositories.UpdateNewssource(appconfig.DB, newssourceForm)
+	err := repositories.UpdateNewssource(appconfig.DB, &newssourceForm)
 	if err != nil {
 		log.Errorf("failed to update newssource %s: %v", newssourceForm.Title, err)
 	}

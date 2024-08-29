@@ -33,7 +33,7 @@ func ArticlePage(c *fiber.Ctx) error {
 	}
 
 	return c.Render("article", fiber.Map{
-		"Newssource": newssource,
-		"Article":    article,
+		"Newssource": &newssource,
+		"Article":    &article,
 	})
 }

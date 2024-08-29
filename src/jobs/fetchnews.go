@@ -39,7 +39,7 @@ func FetchNews(newssource_guid uuid.UUID) ([]models.Article, error) {
 		return nil, err
 	}
 
-	storeArticles(dbconn, articles)
+	storeArticles(dbconn, &articles)
 
 	return articles, nil
 }
@@ -100,22 +100,22 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 	return articles, nil
 }
 
-func storeArticles(dbconn *sql.DB, articles []models.Article) error {
+func storeArticles(dbconn *sql.DB, articles *[]models.Article) error {
 
-	for _, article := range articles {
-		err := repositories.InsertArticle(dbconn, article)
+	for _, article := range *articles {
+		err := repositories.InsertArticle(dbconn, &article)
 
 		if err != nil {
 			log.Errorf("Failed to insert article: %v\n", err)
 		}
 	}
 
-	newssource, err := repositories.FetchNewssource(dbconn, articles[0].Source)
+	newssource, err := repositories.FetchNewssource(dbconn, (*articles)[0].Source)
 	if err != nil {
 		log.Errorf("Failed to fetch newssource: %v\n", err)
 		return err
 	}
-	repositories.UpdateNewssource(dbconn, newssource)
+	repositories.UpdateNewssource(dbconn, &newssource)
 
 	return nil
 }

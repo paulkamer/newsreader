@@ -9,7 +9,7 @@ WIP - a Feedly clone built with Go and HTMX.
 
 ## Running
 
-Start backend with the command:
+From the `src/` dir, run:
 
 ```sh
 air
@@ -19,14 +19,13 @@ And open http://127.0.0.1:3001
 
 ## Testing
 
+From the `src/` dir, run:
+
 ```sh
-cd src
-
-go test ./... -tags 'excludetest'
-
-# Coverage
-go test -tags 'excludetest' -coverprofile=coverage.out ./... && go tool cover -html=coverage.out -o coverage.html
+./runtests.sh
 ```
+
+And open the generated `coverage.html` file in your browser
 
 ## TODOs
 
