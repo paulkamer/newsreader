@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
+	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/template/html/v2"
 	"github.com/google/uuid"
 
@@ -18,6 +19,8 @@ import (
 	"newsreader/jobs"
 
 	"github.com/sirupsen/logrus"
+
+	_ "net/http/pprof"
 )
 
 var log = logrus.New()
@@ -28,6 +31,8 @@ func main() {
 	setLogLevel()
 
 	app := initApp(html.New("./views", ".html"))
+
+	app.Use(pprof.New())
 
 	dbconn := initDatabase(app)
 	defer dbconn.Close()

@@ -46,3 +46,4 @@ And open the generated `coverage.html` file in your browser
   - [ ] Newly added feed should be fetched with highest priority (ASAP)
 - [ ] Group news sources by category
 - [ ] Login
+- [ ] [WIP] profile memory usage
