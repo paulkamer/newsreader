@@ -10,6 +10,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
+
+	"github.com/gofiber/fiber/v2/middleware/favicon"
+
 	"github.com/gofiber/template/html/v2"
 	"github.com/google/uuid"
 
@@ -31,8 +34,6 @@ func main() {
 	setLogLevel()
 
 	app := initApp(html.New("./views", ".html"))
-
-	app.Use(pprof.New())
 
 	dbconn := initDatabase(app)
 	defer dbconn.Close()
@@ -84,6 +85,13 @@ func initApp(engine *html.Engine) *fiber.App {
 
 	app.Use(csrf.New(csrf.Config{
 		ContextKey: "csrf",
+	}))
+
+	app.Use(pprof.New())
+
+	app.Use(favicon.New(favicon.Config{
+		File: "./favicon.ico",
+		URL:  "/favicon.ico",
 	}))
 
 	return app
