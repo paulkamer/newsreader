@@ -47,3 +47,4 @@ And open the generated `coverage.html` file in your browser
 - [ ] Group news sources by category
 - [ ] Login
 - [ ] [WIP] profile memory usage
+- [ ] e2e tests with Playwright
