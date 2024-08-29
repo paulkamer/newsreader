@@ -25,7 +25,7 @@ import (
 
 var log = logrus.New()
 
-const newsUpdateInterval = 1 * time.Minute
+const newsUpdateInterval = 10 * time.Minute
 
 func main() {
 	setLogLevel()
