@@ -27,24 +27,17 @@ From the `src/` dir, run:
 
 And open the generated `coverage.html` file in your browser
 
-## TODOs
+## To-dos
 
-- [x] Use template layout
-- [x] Adding news sources
-- [x] Editing news sources
-- [x] Validate newssource URL (add, edit)
-- [ ] [WIP] Tests
-- [x] CSRF
-- [x] Background jobs: Fetching news
-- [x] Feed/newsource page
-  - [x] List latest (unread) articles
-- [x] logging based on log level
-- [x] Article page
-  - [ ] (un)marking an article as Read
+- [ ] DB migrations (golang-migrate )
+- [ ] Input sanitization (XSS) (go-playground/validator)
+- [ ] Delve debugger
+- [ ] [WIP] Unit tests
+- [ ] [WIP] e2e tests with Playwright
+- [ ] [WIP] profile memory usage
+- [ ] (un)marking an individual article as Read
+- [ ] Group news sources by category
 - [ ] [WIP] Background jobs: job scheduler
 - [ ] Background jobs: handling jobs with different priority
   - [ ] Newly added feed should be fetched with highest priority (ASAP)
-- [ ] Group news sources by category
 - [ ] Login
-- [ ] [WIP] profile memory usage
-- [ ] [WIP] e2e tests with Playwright
