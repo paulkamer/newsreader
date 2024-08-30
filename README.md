@@ -46,12 +46,12 @@ npx playwright show-report
 ## To-dos
 
 - [x] DB migrations (golang-migrate )
+- [x] Delve debugger
 - [ ] Input sanitization (XSS) (go-playground/validator)
-- [ ] Delve debugger
 - [ ] [WIP] Unit tests
 - [ ] [WIP] e2e tests with Playwright
 - [ ] [WIP] profile memory usage
-- [ ] Support Atom 1.0 feeds
+- [x] Support Atom 1.0 feeds
 - [ ] (un)marking an individual article as Read
 - [ ] Group news sources by category
 - [ ] [WIP] Background jobs: job scheduler

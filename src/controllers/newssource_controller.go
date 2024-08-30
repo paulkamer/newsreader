@@ -48,13 +48,13 @@ func AddNewssource(c *fiber.Ctx) error {
 	var newssourceForm models.Newssource
 
 	if err := c.BodyParser(&newssourceForm); err != nil {
+		log.Debugf("Error parsing form data: %v", err)
 		return c.Status(fiber.StatusBadRequest).SendString("Error parsing form data")
 	}
 
 	// TODO validate values
 	newssourceForm.ID = uuid.New()
 	newssourceForm.UpdatePriority = models.MED
-	newssourceForm.FeedType = models.RSS
 	newssourceForm.IsActive = true
 
 	if !validateNewssourceUrl(newssourceForm.Url) {
@@ -84,9 +84,9 @@ func EditNewssource(c *fiber.Ctx) error {
 	// TODO validate values
 	newssourceForm.UpdatePriority, _ = models.StringToUpdatePriority(c.FormValue("update_priority"))
 	newssourceForm.IsActive = c.FormValue("is_active") == "1"
-	newssourceForm.FeedType = models.RSS
 
 	if !validateNewssourceUrl(newssourceForm.Url) {
+		log.Debug("Invalid URL")
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
 	}
 
