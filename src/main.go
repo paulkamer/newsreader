@@ -98,7 +98,7 @@ func initApp(engine *html.Engine) *fiber.App {
 }
 
 func initDatabase(app *fiber.App) *sql.DB {
-	dbConn, _ := db.InitDatabase(db.SQLiteType, db.SQLiteDataSource)
+	dbConn, _ := db.InitDatabase(db.SQLiteType, db.SQLiteDataSource, db.MigrationsDir)
 
 	appconfig := &config.AppConfig{DB: dbConn}
 	app.Use(func(c *fiber.Ctx) error {

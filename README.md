@@ -45,7 +45,7 @@ npx playwright show-report
 
 ## To-dos
 
-- [ ] DB migrations (golang-migrate )
+- [x] DB migrations (golang-migrate )
 - [ ] Input sanitization (XSS) (go-playground/validator)
 - [ ] Delve debugger
 - [ ] [WIP] Unit tests

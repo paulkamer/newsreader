@@ -1,0 +1,9 @@
+CREATE TABLE articles (
+  id GUID PRIMARY KEY,
+  source_id GUID NOT NULL,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME
+);
