@@ -1,6 +1,7 @@
-{{ range .Articles }}
-    <div class="article" >
-        <a href="/article/{{ .ID }}"><h2>{{ .Title }}</h2></a>
-        <p>{{ .CreatedAt }}</p>
-    </div>
-{{ end }}
+<ul class="list-group list-group-flush">
+    {{ range .Articles }}
+    <li class="list-group-item">
+        <small>{{ .CreatedAt }}</small> | <a href="/article/{{ .ID }}">{{ .Title }}</a>
+    </li>
+    {{ end }}
+</ul>

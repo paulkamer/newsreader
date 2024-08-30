@@ -1,9 +1,9 @@
-<a href="/newssources/{{ .Newssource.ID }}">Back to {{ .Newssource.Title }}</a>
+<div class="d-flex flex-column flex-grow-1 flex-shrink-0 p-3">
+    <a href="/newssources/{{ .Newssource.ID }}">Back to {{ .Newssource.Title }}</a>
 
+    <h1>{{ .Article.Title }}</h1>
+    Published at: {{ .Article.CreatedAt }}<br/>
 
-
-<h1>{{ .Article.Title }}</h1>
-Published at: {{ .Article.CreatedAt }}<br/>
-
-Url: <a href="{{ .Article.Url }}" target="_blank">{{ .Article.Url }}</a><br/>
-{{ .Article.Body }}
+    Url: <a href="{{ .Article.Url }}" target="_blank">{{ .Article.Url }}</a><br/>
+    {{ .Article.Body }}
+</div>

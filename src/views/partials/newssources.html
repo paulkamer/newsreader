@@ -7,12 +7,11 @@
 </button>
 {{end}}
 
-<table>
-    {{range .Newssources}}
-        <tr>
-            <td><a href="/newssources/{{ .ID }}">{{.Title}}</a></td>
-            <td>{{.Url}}</td>
-            <td>{{if $.IsAdmin}}{{template "admin_actions" .}}{{end}}</td>
-        </tr>
-    {{end}}
-</table>
+<ul class="list-group list-group-flush">
+{{range .Newssources}}
+    <li class="list-group-item">
+        <a href="/newssources/{{ .ID }}">{{.Title}}</a> {{if $.IsAdmin}}| {{template "admin_actions" .}}{{end}}<br/>
+        <small>{{.Url}}</small>
+    </li>
+{{end}}
+</ul>

@@ -10,10 +10,10 @@ test('has title', async ({ page }) => {
 });
 
 test('has a heading', async ({ page }) => {
-  await expect(page.getByRole('heading')).toHaveText('Home');
+  await expect(page.getByRole('heading', { level: 1})).toHaveText('All feeds');
 });
 
-test('has a table with rows', async ({ page }) => {
-  const rows = await page.locator('table tr').count();
+test('has a list with items', async ({ page }) => {
+  const rows = await page.locator('ul li').count();
   expect(rows).toBeGreaterThan(0);
 });

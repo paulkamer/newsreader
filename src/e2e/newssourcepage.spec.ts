@@ -4,7 +4,7 @@ test('test', async ({ page }) => {
     await page.goto('/');
     
     await test.step('Open first feed', async () => {
-        const firstRow = page.locator('table tr').first();
+        const firstRow = page.locator('ul li').first();
         
         await firstRow.locator('a').click();
     });

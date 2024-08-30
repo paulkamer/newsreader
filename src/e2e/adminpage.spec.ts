@@ -9,11 +9,11 @@ test('has title', async ({ page }) => {
 });
 
 test('has a heading', async ({ page }) => {
-  await expect(page.getByRole('heading')).toHaveText('Admin');
+  await expect(page.getByRole('heading', { level: 1})).toHaveText('Admin');
 });
 
-test('has a table with rows', async ({ page }) => {
-  const rows = await page.locator('table tr').count();
+test('has a list with rows', async ({ page }) => {
+  const rows = await page.locator('ul li').count();
   expect(rows).toBeGreaterThan(0);
 });
 
