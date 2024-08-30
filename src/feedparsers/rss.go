@@ -2,8 +2,9 @@ package feedparsers
 
 import (
 	"encoding/xml"
-	log "github.com/sirupsen/logrus"
 	"newsreader/feedtypes"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func ParseRssFeed(body []byte) (*feedtypes.RSS, error) {
@@ -13,9 +14,10 @@ func ParseRssFeed(body []byte) (*feedtypes.RSS, error) {
 		return nil, err
 	}
 
-	log.Debugf("Parsed RSS feed: %v", rss)
-
-	debugParsedRssFeed(&rss)
+	if log.GetLevel() == log.DebugLevel {
+		log.Debugf("Parsed RSS feed: %v", rss)
+		debugParsedRssFeed(&rss)
+	}
 
 	return &rss, nil
 }
