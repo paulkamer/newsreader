@@ -6,7 +6,8 @@ import (
 	"io"
 	"net/http"
 	"newsreader/db"
-	"newsreader/feedparsers"
+	"newsreader/feedparser"
+	"newsreader/feedtypes"
 	"newsreader/models"
 	"newsreader/repositories"
 	"time"
@@ -68,9 +69,8 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 
 	switch newssource.FeedType {
 	case models.RSS:
-		log.Print("Parsing RSS feed\n")
-		rss, err := feedparsers.ParseRssFeed(body)
-
+		log.Debug("Parsing RSS feed\n")
+		rss, err := feedparser.ParseFeed[feedtypes.RSS](body)
 		if err != nil {
 			log.Errorf("Error parsing RSS feed: %v\n", err)
 			return nil, err
@@ -90,10 +90,8 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 			articles = append(articles, article)
 		}
 	case models.ATOM:
-		log.Print("Parsing Atom feed\n")
-		atom, err := feedparsers.ParseAtomFeed(body)
-		log.Debugf("Atom: %v\n", atom)
-
+		log.Debug("Parsing Atom feed\n")
+		atom, err := feedparser.ParseFeed[feedtypes.AtomFeed](body)
 		if err != nil {
 			log.Errorf("Error parsing Atom feed: %v\n", err)
 			return nil, err

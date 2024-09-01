@@ -1,12 +1,12 @@
-package feedparsers
+package feedparser
 
 import (
 	"encoding/xml"
 	"newsreader/feedtypes"
 )
 
-func ParseAtomFeed(body []byte) (*feedtypes.AtomFeed, error) {
-	var feed feedtypes.AtomFeed
+func ParseFeed[T feedtypes.RSS | feedtypes.AtomFeed](body []byte) (*T, error) {
+	var feed T
 	err := xml.Unmarshal(body, &feed)
 	if err != nil {
 		return nil, err
