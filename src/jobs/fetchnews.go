@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"errors"
 	"io"
@@ -46,7 +47,9 @@ func FetchNews(newssource_guid uuid.UUID) ([]models.Article, error) {
 }
 
 func FetchFeed(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+	client := createCustomHTTPClient()
+
+	resp, err := client.Get(url)
 	if err != nil {
 		log.Errorf("Error making HTTP request: %v\n", err)
 		return nil, err
@@ -141,4 +144,15 @@ func storeArticles(dbconn *sql.DB, articles *[]models.Article) error {
 	repositories.UpdateNewssource(dbconn, &newssource)
 
 	return nil
+}
+
+// CreateCustomHTTPClient creates an HTTP client that skips TLS certificate verification
+func createCustomHTTPClient() *http.Client {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	client := &http.Client{Transport: tr}
+
+	return client
 }
