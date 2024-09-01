@@ -11,9 +11,9 @@ import (
 )
 
 func Seed(dbconn *sql.DB) {
-	hasrecords, _ := repositories.HasNewssources(dbconn)
+	hasrecords, err := repositories.HasNewssources(dbconn)
 
-	if hasrecords {
+	if hasrecords || (err != nil && err != sql.ErrNoRows) {
 		return
 	}
 
