@@ -1,7 +1,7 @@
 <div class="d-flex flex-column flex-grow-1 flex-shrink-0 p-3">
     <h1>Edit {{.Newssource.Title}}</h1>
     <div>
-        <button hx-delete="/admin/newssources/{{.Newssource.ID}}" hx-swap="delete" hx-target="closest tr">
+        <button hx-delete="/newssources/{{.Newssource.ID}}?redirect=true" hx-swap="delete">
             Delete 
         </button>
     </div>

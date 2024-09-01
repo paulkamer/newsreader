@@ -52,13 +52,18 @@ func AdminEditNewssourcePage(c *fiber.Ctx) error {
 func AdminDeleteNewssource(c *fiber.Ctx) error {
 	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	guid, parse_err := uuid.Parse(c.Params("ID"))
-
 	if parse_err != nil {
 		return fiber.ErrBadRequest
 	}
 
+	redirect := c.Query("redirect", "false")
+
 	err := repositories.DeleteNewssource(appconfig.DB, guid)
 	if err == nil {
+		if redirect == "true" {
+			c.Response().Header.Set("HX-redirect", "/admin")
+		}
+
 		return c.SendString(c.Params("ID"))
 	}
 
