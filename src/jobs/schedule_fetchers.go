@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"fmt"
 	"newsreader/db"
 	"newsreader/repositories"
 
@@ -9,6 +10,13 @@ import (
 )
 
 func DetermineOutdatedNewssources(listChan chan uuid.UUID) {
+	defer func() {
+		if r := recover(); r != nil {
+			listChan <- uuid.Nil
+			log.Error(fmt.Sprintf("Recovered from panic: %v", r))
+		}
+	}()
+
 	dbconn, err := db.Connect(db.SQLiteType, db.SQLiteDataSource)
 	if err != nil {
 		log.Error(err)

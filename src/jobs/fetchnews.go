@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"database/sql"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"newsreader/db"
@@ -20,6 +21,12 @@ import (
 
 func FetchNews(newssource_guid uuid.UUID) ([]models.Article, error) {
 	log.Debugf("Fetching news for source: %s\n", newssource_guid)
+
+	defer func() {
+		if r := recover(); r != nil {
+			log.Error(fmt.Sprintf("Recovered from panic: %v", r))
+		}
+	}()
 
 	dbconn, _ := db.Connect(db.SQLiteType, db.SQLiteDataSource)
 	defer dbconn.Close()
