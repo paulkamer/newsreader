@@ -59,8 +59,13 @@ func main() {
 }
 
 func setLogLevel() {
-	level, _ := logrus.ParseLevel(os.Getenv("LOG_LEVEL"))
-	logrus.SetLevel(level)
+	level := os.Getenv("LOG_LEVEL")
+	if level == "" {
+		level = "info"
+	}
+
+	logrusLevel, _ := logrus.ParseLevel(level)
+	logrus.SetLevel(logrusLevel)
 }
 
 func initApp(engine *html.Engine) *fiber.App {
