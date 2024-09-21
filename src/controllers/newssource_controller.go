@@ -73,7 +73,6 @@ func AddNewssource(c *fiber.Ctx) error {
 }
 
 func EditNewssource(c *fiber.Ctx) error {
-	// TODO fetch news source from DB
 	appconfig := c.Locals("appconfig").(*config.AppConfig)
 	var newssourceForm models.Newssource
 
@@ -81,16 +80,24 @@ func EditNewssource(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Error parsing form data")
 	}
 
+	orgNewssource, err := repositories.FetchNewssource(appconfig.DB, newssourceForm.ID)
+	if err != nil {
+		log.Errorf("Failed to fetch newssource: %v", err)
+		return c.Status(fiber.StatusBadRequest).SendString("Failed to fetch newssource")
+	}
+
 	// TODO validate values
 	newssourceForm.UpdatePriority, _ = models.StringToUpdatePriority(c.FormValue("update_priority"))
 	newssourceForm.IsActive = c.FormValue("is_active") == "1"
+
+	newssourceForm.FeedType = orgNewssource.FeedType
 
 	if !validateNewssourceUrl(newssourceForm.Url) {
 		log.Debug("Invalid URL")
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
 	}
 
-	err := repositories.UpdateNewssource(appconfig.DB, &newssourceForm)
+	err = repositories.UpdateNewssource(appconfig.DB, &newssourceForm)
 	if err != nil {
 		log.Errorf("failed to update newssource %s: %v", newssourceForm.Title, err)
 	}

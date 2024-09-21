@@ -17,7 +17,6 @@ test('has a list with rows', async ({ page }) => {
   expect(rows).toBeGreaterThan(0);
 });
 
-
 test('has an Add link', async ({ page }) => {
   expect(page.getByRole('link', { name: 'Add'})).toBeDefined();
 });

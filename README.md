@@ -49,7 +49,7 @@ npx playwright show-report
 - [x] Delve debugger
 - [ ] Input sanitization (XSS) (go-playground/validator)
 - [ ] [WIP] Unit tests
-- [ ] [WIP] e2e tests with Playwright
+- [x] e2e tests with Playwright
 - [ ] [WIP] profile memory usage
 - [x] Support Atom 1.0 feeds
 - [ ] (un)marking an individual article as Read
@@ -57,4 +57,4 @@ npx playwright show-report
 - [ ] [WIP] Background jobs: job scheduler
 - [ ] Background jobs: handling jobs with different priority
   - [ ] Newly added feed should be fetched with highest priority (ASAP)
-- [ ] Login
+- [ ] Multiple users; authentication & authorization
