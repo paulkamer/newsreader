@@ -80,7 +80,7 @@ func ParseFeed(body []byte, newssource models.Newssource) ([]models.Article, err
 	switch newssource.FeedType {
 	case models.RSS:
 		log.Debug("Parsing RSS feed\n")
-		rss, err := feedparser.ParseFeed[feedtypes.RSS](body)
+		rss, err := feedparser.ParseFeed[feedtypes.RssFeed](body)
 		if err != nil {
 			log.Errorf("Error parsing RSS feed: %v\n", err)
 			return nil, err

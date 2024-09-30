@@ -22,7 +22,7 @@ func TestParseFeed_rss(t *testing.T) {
 		</channel>
 		</rss>`
 
-	feed, err := ParseFeed[feedtypes.RSS]([]byte(feedData))
+	feed, err := ParseFeed[feedtypes.RssFeed]([]byte(feedData))
 
 	assert.Nil(t, err)
 	assert.Equal(t, "Example Feed", feed.Channel.Title)
@@ -44,7 +44,7 @@ func TestParseFeed_rss_fail(t *testing.T) {
 		</channel>
 		</rss>`
 
-	_, err := ParseFeed[feedtypes.RSS]([]byte(feedData))
+	_, err := ParseFeed[feedtypes.RssFeed]([]byte(feedData))
 
 	assert.Error(t, err)
 }

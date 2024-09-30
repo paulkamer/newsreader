@@ -2,8 +2,8 @@ package feedtypes
 
 import "encoding/xml"
 
-// RSS represents the entire RSS feed
-type RSS struct {
+// RssFeed represents the entire RssFeed feed
+type RssFeed struct {
 	XMLName xml.Name   `xml:"rss"`
 	Channel RssChannel `xml:"channel"`
 }

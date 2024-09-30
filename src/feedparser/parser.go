@@ -5,7 +5,7 @@ import (
 	"newsreader/feedtypes"
 )
 
-func ParseFeed[T feedtypes.RSS | feedtypes.AtomFeed](body []byte) (*T, error) {
+func ParseFeed[T feedtypes.RssFeed | feedtypes.AtomFeed](body []byte) (*T, error) {
 	var feed T
 	err := xml.Unmarshal(body, &feed)
 	if err != nil {
