@@ -42,9 +42,9 @@ func StringToFeedType(feedType string) (FeedType, error) {
 
 // User represents a user in the database.
 type Newssource struct {
-	ID             uuid.UUID      `json:"id"`
-	Title          string         `json:"title"`
-	Url            string         `json:"url"`
+	ID             uuid.UUID      `json:"id" validate:"required"`
+	Title          string         `json:"title" validate:"required"`
+	Url            string         `json:"url" validate:"required,url"`
 	FeedType       FeedType       `json:"feed_type"`
 	UpdatePriority UpdatePriority `json:"update_priority"`
 	IsActive       bool           `json:"is_active"`

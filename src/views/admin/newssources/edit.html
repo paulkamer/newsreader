@@ -1,32 +1,12 @@
 <div class="d-flex flex-column flex-grow-1 flex-shrink-0 p-3">
     <h1>Edit {{.Newssource.Title}}</h1>
+        
+    {{template "admin/newssources/_editform" .}}
+    
+    <hr />
     <div>
         <button hx-delete="/newssources/{{.Newssource.ID}}?redirect=true" hx-swap="delete">
             Delete 
         </button>
     </div>
-
-    <div class="clearfix"></div>
-    
-    <form hx-put="/newssources" hx-trigger="submit">
-        <input type="hidden" name="id" value="{{.Newssource.ID}}" />
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" value="{{.Newssource.Title}}" required><br>
-        
-        <label for="url">URL:</label>
-        <input type="text" id="url" name="url" value="{{.Newssource.Url}}" required><br>
-        
-        
-        <label for="update_priority">Update priority:</label>
-        <select id="update_priority" name="update_priority">
-            {{range .Options}}
-            <option value="{{.}}" {{if eq . $.Newssource.UpdatePriority}}selected="selected"{{end}}>{{.}}</option>
-            {{end}}
-        </select><br/>
-        
-        <label for="is_active">Is Active?:</label>
-        <input type="checkbox" id="is_active" name="is_active" value="1" {{if $.Newssource.IsActive}}checked="checked"{{end}} /><br>
-        
-        <button type="submit">Submit</button>
-    </form>
 </div>

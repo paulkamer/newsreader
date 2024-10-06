@@ -1,0 +1,17 @@
+<form hx-post="/newssources" hx-swap="innerHTML">
+    <label for="title">Title:</label>
+    {{if .Errors.Title}}<span style="color:red">{{.Errors.Title}}</span>{{end}}
+    <input type="text" id="title" name="title" value="{{.Newssource.Title}}"><br>
+    
+    <label for="url">URL:</label>
+    {{if .Errors.Url}}<span style="color:red">{{.Errors.Url}}</span>{{end}}
+    <input type="text" id="url" name="url" value="{{.Newssource.Url}}"><br>
+    
+    <label for="feedtype">Feed Type:</label>
+    <select id="feedtype" name="feedtype" required>
+        <option value="rss">RSS</option>
+        <option value="atom">Atom</option>
+    </select><br>
+    
+    <button type="submit">Submit</button>
+</form>

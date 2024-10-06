@@ -1,0 +1,23 @@
+<form hx-put="/newssources" hx-trigger="submit" hx-swap="innerHTML">
+    <input type="hidden" name="id" value="{{.Newssource.ID}}" />
+
+    <label for="title">Title:</label>
+    {{if .Errors.Title}}<span style="color:red">{{.Errors.Title}}</span>{{end}}
+    <input type="text" id="title" name="title" value="{{.Newssource.Title}}"><br>
+    
+    <label for="url">URL:</label>
+    {{if .Errors.Url}}<span style="color:red">{{.Errors.Url}}</span>{{end}}
+    <input type="text" id="url" name="url" value="{{.Newssource.Url}}"><br>
+    
+    <label for="updatepriority">Update priority:</label>
+    <select id="updatepriority" name="updatepriority">
+        {{range .Options}}
+        <option value="{{.}}" {{if eq . $.Newssource.UpdatePriority}}selected="selected"{{end}}>{{.}}</option>
+        {{end}}
+    </select><br/>
+    
+    <label for="isactive">Is Active?:</label>
+    <input type="checkbox" id="isactive" name="isactive" value="1" {{if $.Newssource.IsActive}}checked="checked"{{end}} /><br>
+    
+    <button type="submit">Submit</button>
+</form>

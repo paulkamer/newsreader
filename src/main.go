@@ -47,8 +47,8 @@ func main() {
 	app.Get("/admin/newssources/add", controllers.AdminAddNewssourcePage)
 	app.Get("/admin/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
 
-	app.Post("/newssources", controllers.AddNewssource)
-	app.Put("/newssources", controllers.EditNewssource)
+	app.Post("/newssources", controllers.AdminAddNewssource)
+	app.Put("/newssources", controllers.AdminEditNewssource)
 	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
 
 	app.Get("/article/:ID", controllers.ArticlePage)

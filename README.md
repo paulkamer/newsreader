@@ -47,7 +47,9 @@ npx playwright show-report
 
 - [x] DB migrations (golang-migrate )
 - [x] Delve debugger
-- [ ] Input sanitization (XSS) (go-playground/validator)
+- [x] Input sanitization (XSS) (go-playground/validator
+  - [x] add news source
+  - [x] edit news source
 - [ ] [WIP] Unit tests
 - [x] e2e tests with Playwright
 - [ ] [WIP] profile memory usage
