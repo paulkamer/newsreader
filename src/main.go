@@ -11,6 +11,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 
+	"github.com/gofiber/fiber/v2/middleware/session"
+
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 
 	"github.com/gofiber/template/html/v2"
@@ -33,6 +35,7 @@ const newsUpdateInterval = 10 * time.Minute
 func main() {
 	setLogLevel()
 
+	store := session.New()
 	app := initApp(html.New("./views", ".html"))
 
 	dbconn := initDatabase(app)
@@ -41,11 +44,17 @@ func main() {
 	// Routes
 	app.Get("/", controllers.Indexpage)
 
+	auth := app.Group("/auth")
+	auth.Get("/login", controllers.LoginPage)
+	auth.Post("/login", controllers.HandleLogin)
+	auth.Post("/logout", controllers.HandleLogout)
+
 	app.Get("/newssources/:ID", controllers.NewssourcePage)
 
-	app.Get("/admin", controllers.AdminIndexPage)
-	app.Get("/admin/newssources/add", controllers.AdminAddNewssourcePage)
-	app.Get("/admin/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
+	admin := app.Group("/admin")
+	admin.Get("/", controllers.AdminIndexPage)
+	admin.Get("/newssources/add", controllers.AdminAddNewssourcePage)
+	admin.Get("/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
 
 	app.Post("/newssources", controllers.AdminAddNewssource)
 	app.Put("/newssources", controllers.AdminEditNewssource)
