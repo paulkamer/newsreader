@@ -2,12 +2,16 @@
   "name": "newsreader",
   "version": "0.0.1",
   "description": "WIP - a Feedly clone built with Go and HTMX.",
-  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "npx playwright test --ui",
+    "test:e2e:report": "npx playwright show-report"
+  },
   "devDependencies": {
-    "@playwright/test": "^1.46.1",
+    "@playwright/test": "^1.48.2",
     "@types/node": "^22.5.1"
   }
 }
