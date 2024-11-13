@@ -45,18 +45,23 @@ npx playwright show-report
 
 ## To-dos
 
-- [x] DB migrations (golang-migrate )
+- [x] DB migrations (golang-migrate)
 - [x] Delve debugger
-- [x] Input sanitization (XSS) (go-playground/validator
+- [x] Input sanitization (XSS) (go-playground/validator)
   - [x] add news source
   - [x] edit news source
-- [ ] [WIP] Unit tests
 - [x] e2e tests with Playwright
-- [ ] [WIP] profile memory usage
 - [x] Support Atom 1.0 feeds
+- [ ] [WIP] Unit tests
+- [ ] [WIP] profile memory usage
+
+Personalization
+- [ ] Multiple users; authentication & authorization
 - [ ] (un)marking an individual article as Read
 - [ ] Group news sources by category
+
+News fetching
 - [ ] [WIP] Background jobs: job scheduler
-- [ ] Background jobs: handling jobs with different priority
+  - [ ] Background jobs: handling jobs with different priority
   - [ ] Newly added feed should be fetched with highest priority (ASAP)
-- [ ] Multiple users; authentication & authorization
+
