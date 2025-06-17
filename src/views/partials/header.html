@@ -1,3 +1,9 @@
 <header class="d-flex flex-row p-3 border-bottom">
-  <a href="/">Home</a>&nbsp;|&nbsp;<a href="/admin">Admin</a>
+  <a href="/">Home</a>{{if .is_admin }}&nbsp;|&nbsp;<a href="/admin">Admin</a>{{end}}
+ 
+  {{if .is_authenticated}}
+    <div class="ms-auto">
+      <button hx-delete="/logout" hx-target="main" hx-swap="innerHTML" class="btn btn-danger me-2">Logout</button>
+    </div>
+  {{end}}
 </header>

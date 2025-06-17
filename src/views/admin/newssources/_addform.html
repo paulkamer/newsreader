@@ -1,4 +1,4 @@
-<form hx-post="/newssources" hx-swap="innerHTML">
+<form hx-post="/admin/newssources" hx-swap="innerHTML">
     <label for="title">Title:</label>
     {{if .Errors.Title}}<span style="color:red">{{.Errors.Title}}</span>{{end}}
     <input type="text" id="title" name="title" value="{{.Newssource.Title}}"><br>

@@ -1,0 +1,12 @@
+<form hx-post="/login" hx-trigger="submit" hx-swap="innerHTML">
+    <label for="username">Username:</label>
+    {{if .Errors.Username}}<span style="color:red">{{.Errors.Username}}</span>{{end}}
+    <input type="text" id="username" name="username" value=""><br>
+    
+    <label for="password">Password:</label>
+    {{if .Errors.Password}}<span style="color:red">{{.Errors.Password}}</span>{{end}}
+    <input type="password" id="password" name="password"><br>
+
+    
+    <button type="submit">Login</button>
+</form>

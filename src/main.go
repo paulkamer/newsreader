@@ -4,12 +4,14 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
+	"github.com/gofiber/fiber/v2/middleware/session"
 
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 
@@ -27,6 +29,7 @@ import (
 )
 
 var log = logrus.New()
+var store = session.New()
 
 const newsUpdateInterval = 10 * time.Minute
 
@@ -39,19 +42,23 @@ func main() {
 	defer dbconn.Close()
 
 	// Routes
-	app.Get("/", controllers.Indexpage)
+	app.Get("/", authRequired, controllers.Indexpage)
 
-	app.Get("/newssources/:ID", controllers.NewssourcePage)
+	app.Get("/login", controllers.LoginPage)
+	app.Post("/login", login)
+	app.Delete("/logout", authRequired, logout)
 
-	app.Get("/admin", controllers.AdminIndexPage)
-	app.Get("/admin/newssources/add", controllers.AdminAddNewssourcePage)
-	app.Get("/admin/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
+	app.Get("/newssources/:ID", authRequired, controllers.NewssourcePage)
 
-	app.Post("/newssources", controllers.AdminAddNewssource)
-	app.Put("/newssources", controllers.AdminEditNewssource)
-	app.Delete("/newssources/:ID", controllers.AdminDeleteNewssource)
+	adminGroup := app.Group("/admin", authRequired, adminRequired)
+	adminGroup.Get("/", controllers.AdminIndexPage)
+	adminGroup.Get("/newssources/add", controllers.AdminAddNewssourcePage)
+	adminGroup.Get("/newssources/edit/:ID", controllers.AdminEditNewssourcePage)
+	adminGroup.Post("/newssources", authRequired, controllers.AdminAddNewssource)
+	adminGroup.Put("/newssources", authRequired, controllers.AdminEditNewssource)
+	adminGroup.Delete("/newssources/:ID", authRequired, controllers.AdminDeleteNewssource)
 
-	app.Get("/article/:ID", controllers.ArticlePage)
+	app.Get("/article/:ID", authRequired, controllers.ArticlePage)
 
 	startNewsUpdateScheduler()
 
@@ -80,24 +87,17 @@ func initApp(engine *html.Engine) *fiber.App {
 				code = e.Code
 			}
 
-			log.Error("An error occurred", "error", err)
+			log.Error("An error occurred: ", "error", err)
 
 			return c.Status(code).SendString("An error occurred")
 		},
 	})
 
 	app.Use(requestLogger())
-
-	app.Use(csrf.New(csrf.Config{
-		ContextKey: "csrf",
-	}))
+	app.Use(csrf.New(csrf.Config{ContextKey: "csrf"}))
+	app.Use(favicon.New(favicon.Config{File: "./favicon.ico", URL: "/favicon.ico"}))
 
 	app.Use(pprof.New())
-
-	app.Use(favicon.New(favicon.Config{
-		File: "./favicon.ico",
-		URL:  "/favicon.ico",
-	}))
 
 	return app
 }
@@ -118,7 +118,7 @@ func requestLogger() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		start := time.Now()
 
-		err := c.Next() // Proceed with the next middleware or handler
+		err := c.Next()
 
 		log.WithFields(logrus.Fields{
 			"method":     c.Method(),
@@ -150,4 +150,111 @@ func startNewsUpdateScheduler() {
 			go jobs.FetchNews(id)
 		}
 	}()
+}
+
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type User struct {
+	Password string `json:"password"`
+	IsAdmin  bool   `json:"isAdmin"`
+}
+
+func login(c *fiber.Ctx) error {
+	var creds Credentials
+	if err := c.BodyParser(&creds); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "cannot parse JSON"})
+	}
+
+	// Load user credentials from JSON file
+	users, err := fetchUsers()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "cannot open users file"})
+	}
+
+	if user, ok := users[creds.Username]; ok && user.Password == creds.Password {
+		sess, err := store.Get(c)
+		if err != nil {
+			return err
+		}
+		sess.Set("authenticated", true)
+		sess.Set("username", creds.Username)
+		sess.Set("isAdmin", user.IsAdmin)
+		if err := sess.Save(); err != nil {
+			return err
+		}
+
+		c.Set("HX-Redirect", "/")
+		return c.SendStatus(fiber.StatusSeeOther) // 303 See Other
+	}
+
+	c.Set("HX-Refresh", "true")
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid credentials"})
+}
+
+func logout(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil {
+		return err
+	}
+
+	if err := sess.Destroy(); err != nil {
+		return err
+	}
+
+	c.Set("HX-Redirect", "/login")
+	return c.SendStatus(fiber.StatusSeeOther) // 303 See Other
+}
+
+func fetchUsers() (map[string]User, error) {
+	file, err := os.Open("users.json")
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var users map[string]User
+	if err := json.NewDecoder(file).Decode(&users); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func authRequired(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil {
+		return err
+	}
+
+	if auth, ok := sess.Get("authenticated").(bool); !ok || !auth {
+		return c.Redirect("/login")
+	}
+
+	c.Locals("is_authenticated", true)
+
+	isAdmin, _ := sess.Get("isAdmin").(bool)
+
+	log.WithFields(logrus.Fields{
+		"username": sess.Get("username"),
+		"isAdmin":  isAdmin,
+	}).Info("auth check")
+	c.Locals("is_admin", isAdmin)
+
+	return c.Next()
+}
+
+func adminRequired(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil {
+		return err
+	}
+
+	if isAdmin, ok := sess.Get("isAdmin").(bool); !ok || !isAdmin {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "forbidden"})
+	}
+
+	return c.Next()
 }

@@ -21,13 +21,13 @@ And open http://127.0.0.1:3001
 
 ### Unit tests
 
-From the `src/` dir, run:
+From the `/` dir, run:
 
 ```sh
-./runtests.sh
+./unit-tests.sh
 ```
 
-And open the generated `coverage.html` file in your browser
+And open the generated `src/coverage.html` file in your browser
 
 ### E2E tests
 
@@ -54,11 +54,15 @@ npx playwright show-report
 - [x] Support Atom 1.0 feeds
 - [ ] [WIP] Unit tests
 - [ ] [WIP] profile memory usage
+- [ ] e2e tests for authorization rules
 
 Personalization
-- [ ] Multiple users; authentication & authorization
-- [ ] (un)marking an individual article as Read
+- [x] Multi-user - authentication
+- [x] Multi-user - authorization
+- [ ] Multi-user - store users in DB instead of JSON file
+- [ ] Multi-user - support sign ups / registrations
 - [ ] Group news sources by category
+- [ ] (un)marking an individual article as Read
 
 News fetching
 - [ ] [WIP] Background jobs: job scheduler
